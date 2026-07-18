@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- Global Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return request.auth.token.email_verified == true; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Users ---
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && 
+        incoming().keys().hasAll(['uid', 'username', 'gold', 'prestigePoints', 'prestigeMultiplier', 'activeTheme', 'totalClicks', 'manualLevel', 'multiplierTier', 'status', 'drones', 'createdAt']) &&
+        incoming().uid == request.auth.uid;
+      allow update: if isSignedIn() && userId == request.auth.uid;
+
+      match /watchlist/{symbol} {
+        allow read, write: if isSignedIn() && userId == request.auth.uid;
+      }
+    }
+
+    // --- Friendships ---
+    match /friendships/{friendshipId} {
+      allow read: if isSignedIn() && (existing().senderId == request.auth.uid || existing().receiverId == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(friendshipId) && 
+        incoming().senderId == request.auth.uid && incoming().status == 'pending';
+      allow update: if isSignedIn() && (existing().senderId == request.auth.uid || existing().receiverId == request.auth.uid) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status']) &&
+        incoming().status in ['pending', 'accepted'];
+    }
+
+    // --- Chats ---
+    match /chats/{chatId} {
+      allow read: if isSignedIn() && (existing().senderId == request.auth.uid || existing().receiverId == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(chatId) &&
+        incoming().senderId == request.auth.uid;
+      allow update: if isSignedIn() && (existing().senderId == request.auth.uid || existing().receiverId == request.auth.uid) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['inviteActive']);
+    }
+
+    // --- News ---
+    match /news/{newsId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(newsId);
+      allow update: if false; // News bulletins are immutable
+    }
+  }
+}

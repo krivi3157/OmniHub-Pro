@@ -1,0 +1,24 @@
+--- src/components/ArcadeWidget.tsx
++++ src/components/ArcadeWidget.tsx
+@@ -466,7 +466,7 @@
+ 
+     loop();
+-    return () => cancelAnimationFrame(animId);
+-  }, [gameOver, controlType, joyActive, joyOffset, game]);
++    return () => cancelAnimationFrame(animId);
++  }, [gameOver, controlType, game]);
+ 
+   // Pointer move handler
+@@ -549,6 +549,6 @@
+             <div className="grid grid-cols-3 gap-1 w-24">
+               <div />
+-              <button onPointerDown={() => { setJoyActive(true); setJoyOffset({ x: 0, y: -1 }); }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">▲</button>
++              <button onPointerDown={() => { joyActiveRef.current = true; joyOffsetRef.current = { x: 0, y: -1 }; }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">▲</button>
+               <div />
+-              <button onPointerDown={() => { setJoyActive(true); setJoyOffset({ x: -1, y: 0 }); }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">◀</button>
+-              <button onPointerDown={() => { setJoyActive(true); setJoyOffset({ x: 0, y: 1 }); }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">▼</button>
+-              <button onPointerDown={() => { setJoyActive(true); setJoyOffset({ x: 1, y: 0 }); }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">▶</button>
++              <button onPointerDown={() => { joyActiveRef.current = true; joyOffsetRef.current = { x: -1, y: 0 }; }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">◀</button>
++              <button onPointerDown={() => { joyActiveRef.current = true; joyOffsetRef.current = { x: 0, y: 1 }; }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">▼</button>
++              <button onPointerDown={() => { joyActiveRef.current = true; joyOffsetRef.current = { x: 1, y: 0 }; }} className="bg-slate-800 p-1.5 text-xs rounded-lg text-white">▶</button>
+             </div>

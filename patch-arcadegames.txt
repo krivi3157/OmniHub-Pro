@@ -1,0 +1,20 @@
+--- src/data/arcadeGames.ts
++++ src/data/arcadeGames.ts
+@@ -2,7 +2,7 @@
+   id: string;
+   name: string;
+   description: string;
+-  category: 'arcade' | 'puzzles' | 'sports' | 'strategy' | 'runners';
++  category: 'arcade' | 'puzzles' | 'sports' | 'strategy' | 'runners' | 'fidget';
+   themeColor: string;
+   accentColor: string;
+   difficulty: 'EASY' | 'MEDIUM' | 'EXPERT';
+@@ -21,7 +21,7 @@
+   { id: 'arcade', label: 'Classic Arcade', icon: 'Gamepad2' },
+   { id: 'puzzles', label: 'Logic Puzzles', icon: 'Puzzle' },
+   { id: 'sports', label: 'Pro Sports', icon: 'Trophy' },
+   { id: 'strategy', label: 'Strategy Board', icon: 'Target' },
+-  { id: 'runners', label: 'Endless Runners', icon: 'Zap' }
++  { id: 'runners', label: 'Endless Runners', icon: 'Zap' },
++  { id: 'fidget', label: 'Fidget & Fighting', icon: 'Gamepad2' }
+ ];

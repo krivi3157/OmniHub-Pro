@@ -1,0 +1,6 @@
+{
+  "name": "OmniHub Pro",
+  "description": "An incremental clicker merged with a massive arcade hub, utilities, productivity dashboards, and an omnipresent Gemini AI assistant, built with an elegant Bento Grid style.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

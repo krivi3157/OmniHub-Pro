@@ -1,0 +1,8 @@
+--- server.ts
++++ server.ts
+@@ -4,6 +4,6 @@
+ import dotenv from 'dotenv';
+-import { GoogleGenAI } from '@google/genai';
++import { GoogleGenAI, GenerateVideosOperation } from '@google/genai';
+ 
+ dotenv.config();

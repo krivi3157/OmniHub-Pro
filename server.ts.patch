@@ -1,0 +1,82 @@
+--- server.ts
++++ server.ts
+@@ -367,23 +367,61 @@
+   console.log(`Generating AI asset (${type || 'image'}): ${prompt}`);
+ 
+-  // Simulate premium AI generation
+-    // Generate a beautiful theme-matching unsplash keyword/id url or direct custom SVG data
+-    const normalized = prompt.toLowerCase();
+-    let url = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80'; // abstract fluid gold
+-    
+-    if (normalized.includes('gold') || normalized.includes('mine')) {
+-      url = 'https://images.unsplash.com/photo-1610375228911-c42e8f49e0ca?auto=format&fit=crop&w=600&q=80'; // luxury gold
+-    } else if (normalized.includes('crypto') || normalized.includes('bitcoin')) {
+-      url = 'https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&w=600&q=80'; // bitcoin gold
+-    } else if (normalized.includes('cosmic') || normalized.includes('space') || normalized.includes('harvest')) {
+-      url = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80'; // cosmos galaxy
+-    } else if (normalized.includes('tycoon') || normalized.includes('money')) {
+-      url = 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80'; // finance
+-    }
++  try {
++    let url = '';
++    if (type === 'image') {
++      const response = await ai.models.generateContent({
++        model: 'gemini-3.1-flash-lite-image',
++        contents: {
++          parts: [{ text: prompt }]
++        },
++        config: {
++          imageConfig: {
++            aspectRatio: "16:9",
++            imageSize: "1K"
++          }
++        }
++      });
++      for (const part of response.candidates?.[0]?.content?.parts || []) {
++        if (part.inlineData) {
++          url = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
++          break;
++        }
++      }
++    } else if (type === 'video') {
++      const operation = await ai.models.generateVideos({
++        model: 'veo-3.1-lite-generate-preview',
++        prompt: prompt,
++        config: {
++          numberOfVideos: 1,
++          resolution: '720p',
++          aspectRatio: '16:9'
++        }
++      });
++      return res.json({
++        success: true,
++        operationName: operation.name,
++        message: `Video generation started. Please wait.`
++      });
++    }
+ 
+     // Mock generated item metadata to return
+     const fileId = 'd' + Math.floor(Math.random() * 1000);
+     const newFile = {
+       id: fileId,
+       name: `AI_${type === 'video' ? 'Video' : 'Asset'}_${Math.floor(Math.random() * 900 + 100)}.${type === 'video' ? 'mp4' : 'png'}`,
+       type: type === 'video' ? 'video' : 'image',
+       size: type === 'video' ? '8.4 MB' : '3.2 MB',
+       date: 'Just now',
+       url
+     };
+ 
+     // Add to driveFiles simulation
+     systemState.driveFiles.unshift(newFile);
+ 
+     return res.json({
+       success: true,
+       url,
+       file: newFile,
+       message: `Successfully generated ${type || 'image'} and saved to Google Drive!`
+     });
++  } catch (error) {
++    console.error('Media generation failed', error);
++    return res.status(500).json({ error: 'Media generation failed' });
++  }
+ });

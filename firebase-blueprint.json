@@ -1,0 +1,183 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account and game progression state",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique identifier matching request.auth.uid"
+        },
+        "username": {
+          "type": "string",
+          "description": "Interactive gamer tag selected by the player"
+        },
+        "gold": {
+          "type": "number",
+          "description": "Total gold wealth accrued"
+        },
+        "prestigePoints": {
+          "type": "integer",
+          "description": "Prestige points earned after resetting"
+        },
+        "prestigeMultiplier": {
+          "type": "number",
+          "description": "Multiplier scaling reward outcomes"
+        },
+        "activeTheme": {
+          "type": "string",
+          "description": "Active UI accent aesthetic theme ID"
+        },
+        "totalClicks": {
+          "type": "integer",
+          "description": "Cumulative tapping click actions count"
+        },
+        "manualLevel": {
+          "type": "integer",
+          "description": "Active tap efficiency tier level"
+        },
+        "multiplierTier": {
+          "type": "integer",
+          "description": "Acquired exponential scale tier"
+        },
+        "status": {
+          "type": "string",
+          "description": "Presence state indicator: Online or Offline"
+        },
+        "activeGame": {
+          "type": "string",
+          "description": "Identifier of current arcade room game being played"
+        },
+        "drones": {
+          "type": "array",
+          "description": "List of active automated harvesting companion drones"
+        },
+        "createdAt": {
+          "type": "integer",
+          "description": "Creation timestamp epoch milliseconds"
+        }
+      },
+      "required": ["uid", "username", "gold", "prestigePoints", "prestigeMultiplier", "activeTheme", "totalClicks", "manualLevel", "multiplierTier", "status", "drones", "createdAt"]
+    },
+    "Friendship": {
+      "title": "Friendship",
+      "description": "Social peer relationships mapping",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique deterministic or random document ID"
+        },
+        "senderId": {
+          "type": "string",
+          "description": "UID of the player requesting the handshake"
+        },
+        "senderUsername": {
+          "type": "string",
+          "description": "Gamer tag of the initiator"
+        },
+        "receiverId": {
+          "type": "string",
+          "description": "UID of the player receiving the request"
+        },
+        "receiverUsername": {
+          "type": "string",
+          "description": "Gamer tag of the recipient"
+        },
+        "status": {
+          "type": "string",
+          "description": "Handshake state: pending or accepted"
+        },
+        "createdAt": {
+          "type": "integer",
+          "description": "Creation timestamp epoch milliseconds"
+        }
+      },
+      "required": ["id", "senderId", "senderUsername", "receiverId", "receiverUsername", "status", "createdAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Encrypted real-time direct message or interactive duel invite",
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string",
+          "description": "Deterministic room ID string formatted as lesserUID_greaterUID"
+        },
+        "senderId": {
+          "type": "string",
+          "description": "UID of the message author"
+        },
+        "senderUsername": {
+          "type": "string",
+          "description": "Gamer tag of the message author"
+        },
+        "receiverId": {
+          "type": "string",
+          "description": "UID of the targeted recipient"
+        },
+        "content": {
+          "type": "string",
+          "description": "Message context body content"
+        },
+        "createdAt": {
+          "type": "integer",
+          "description": "Creation timestamp epoch milliseconds"
+        },
+        "inviteGame": {
+          "type": "string",
+          "description": "Optional arcade game ID for head-to-head duels"
+        },
+        "inviteActive": {
+          "type": "boolean",
+          "description": "Indicates if duel invite state remains pending"
+        }
+      },
+      "required": ["roomId", "senderId", "senderUsername", "receiverId", "content", "createdAt"]
+    },
+    "DeveloperNews": {
+      "title": "DeveloperNews",
+      "description": "Announcements and patches broadcasted to all terminals",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Log headline"
+        },
+        "content": {
+          "type": "string",
+          "description": "Markdown formatted news body"
+        },
+        "createdAt": {
+          "type": "integer",
+          "description": "Publication timestamp epoch milliseconds"
+        },
+        "author": {
+          "type": "string",
+          "description": "Gamer tag of the publisher author"
+        }
+      },
+      "required": ["title", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Core player progressions"
+    },
+    "/friendships/{friendshipId}": {
+      "schema": "Friendship",
+      "description": "Peer relationships mapping"
+    },
+    "/chats/{chatId}": {
+      "schema": "ChatMessage",
+      "description": "Encrypted direct messages and duels"
+    },
+    "/news/{newsId}": {
+      "schema": "DeveloperNews",
+      "description": "System development news bulletins"
+    }
+  }
+}
